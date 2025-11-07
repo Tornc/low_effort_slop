@@ -6,7 +6,9 @@ From: https://help.minecraft.net/hc/en-us
 
 Disclaimer: please follow [Microsoft's Terms of Use](https://www.microsoft.com/en-us/legal/terms-of-use).
 
-# Payload
+## Merl network traffic observations
+
+I wasn't able to find any official documentation, so it had to be done through staring at the browser console. Hence, the explanations are nowhere near comprehensive.
 
 ### initialize_conversation
 
@@ -23,11 +25,15 @@ Request payload:
   "clientId": "MINECRAFT_HELP",
   "conversationId": null,
   "forceReset": false,
-  "greeting": "Hi there! <br/><br/> I'm Merl, your helpful Minecraft Support Virtual Agent <i>(in Beta)</i>, powered by AI! <br/><br/> I can answer questions you have about the Help Articles on this site. <br/><br/> Let's get you back to crafting!", // you can change this to anything
+  "greeting": "Hi there! <br/><br/> I'm Merl, your helpful Minecraft Support Virtual Agent <i>(in Beta)</i>, powered by AI! <br/><br/> I can answer questions you have about the Help Articles on this site. <br/><br/> Let's get you back to crafting!",
   "locale": "en-US",
   "country": "US"
 }
 ```
+
+The `greeting` can be changed to anything. This value will get mirrored in the response. I suspect this is the only extra context (chat history) the chatbot takes into account. 
+
+As an example, putting "axe axe axe" as `greeting` and then asking "How to craft an axe?" will not give a policy violation warning (unlike with the default `greeting`).
 
 Request response:
 
@@ -42,7 +48,7 @@ Request response:
       "response": [
         {
           "type": "Paragraph",
-          "text": "Hi there! <br/><br/> I'm Merl, your helpful Minecraft Support Virtual Agent <i>(in Beta)</i>, powered by AI! <br/><br/> I can answer questions you have about the Help Articles on this site. <br/><br/> Let's get you back to crafting!" // This value depends on what you put in greeting.
+          "text": "Hi there! <br/><br/> I'm Merl, your helpful Minecraft Support Virtual Agent <i>(in Beta)</i>, powered by AI! <br/><br/> I can answer questions you have about the Help Articles on this site. <br/><br/> Let's get you back to crafting!"
         }
       ]
     }
@@ -55,6 +61,12 @@ Request response:
   }
 }
 ```
+
+Like mentioned before, the `response` mirrors `greeting`. 
+
+`conversationId`, `eTag` and `personaId` are required for your chat messages, so store them. The first 2 are also different for each session.
+
+At the time of observation, `supportedPersonaIds` only contains 1 element. Maybe in the future there'll be other personalities than Merl.
 
 ### chat
 
@@ -70,12 +82,14 @@ Request payload:
 {
   "conversationId": "...", // omitted
   "eTag": "\"...\"", // omitted
-  "text": "How do I craft a shovel?", // The prompt you want to send to Merl.
+  "text": "How do I craft a shovel?",
   "customizationSelections": {
     "personaId": "..." // omitted
   }
 }
 ```
+
+`text` is the message you want to send to Merl.
 
 Request response:
 
@@ -136,4 +150,6 @@ Request response:
 }
 ```
 
-Note that `eTag` changes every message, so you have to always use the one from the last response. Also, there are 2 possible response types: just a single text and a list of texts.
+Note that `eTag` changes every message, so you have to always use the one from the last response. The `conversationId` stays the same though.
+
+There are 2 possible response types: just a single text and a list of texts.

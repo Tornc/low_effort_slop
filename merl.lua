@@ -12,9 +12,7 @@ local INIT_PAYLOAD = {
     country = "US"
 }
 
---[[ STATE ]]
-
-local conversation_id, etag, persona_id, merl_resp_str, raw_response
+--[[ FUNCTIONS ]]
 
 local function send_init()
     local init_request = http.post(
@@ -31,12 +29,12 @@ local function send_init()
         init_response["history"][1]["response"][1]["text"]
 end
 
-local function send_chat(cid, et, text)
+local function send_chat(cid, et, pid, text)
     local chat_payload = {
         conversationId = cid,
         eTag = et,
         text = text,
-        customizationSelections = { personaId = persona_id },
+        customizationSelections = { personaId = pid },
     }
     local chat_request = http.post(
         CHAT_URL,
@@ -62,7 +60,7 @@ local function format_response_text(raw_resp)
     return table.concat(parts, "\n")
 end
 
-conversation_id, etag, persona_id, merl_resp_str = send_init()
+local conversation_id, etag, persona_id, merl_resp_str = send_init()
 
 while true do
     print(merl_resp_str)
@@ -70,7 +68,7 @@ while true do
     term.write("> ")
     local text = read()
 
-    raw_response = send_chat(conversation_id, etag, text)
+    local raw_response = send_chat(conversation_id, etag, persona_id, text)
     etag = raw_response["eTag"]
     merl_resp_str = format_response_text(raw_response)
 end

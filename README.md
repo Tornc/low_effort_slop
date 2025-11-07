@@ -8,7 +8,7 @@ Disclaimer: please follow [Microsoft's Terms of Use](https://www.microsoft.com/e
 
 ## Merl network traffic observations
 
-I wasn't able to find any official documentation, so it had to be done through staring at the browser console. Hence, the explanations are nowhere near comprehensive.
+I wasn't able to find any official documentation, so it had to be done through staring at the browser console. Hence, the explanations are not comprehensive nor guaranteed to be accurate.
 
 ### initialize_conversation
 
@@ -31,9 +31,7 @@ Request payload:
 }
 ```
 
-The `greeting` can be changed to anything. This value will get mirrored in the response. I suspect this is the only extra context (chat history) the chatbot takes into account. 
-
-As an example, putting "axe axe axe" as `greeting` and then asking "How to craft an axe?" will not give a policy violation warning (unlike with the default `greeting`).
+The `greeting` can be changed to anything. This value will get mirrored in the response. But will also affect Merl's context. As an example, putting "axe axe axe" as `greeting` and then asking "how do i craft an axe?" will not give a policy violation warning (unlike with the default `greeting`).
 
 Request response:
 
@@ -61,8 +59,6 @@ Request response:
   }
 }
 ```
-
-Like mentioned before, the `response` mirrors `greeting`. 
 
 `conversationId`, `eTag` and `personaId` are required for your chat messages, so store them. The first 2 are also different for each session.
 
